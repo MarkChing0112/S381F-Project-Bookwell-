@@ -5,8 +5,9 @@
     "version": "0.0.1",
     "dependencies": {
         "body-parser": "*",
-        "express": "*",
-        "ejs": "*"
+        "bootstrap": "^5.2.2",
+        "ejs": "*",
+        "express": "*"
     },
     "engine": "node >= 0.10.0",
     "scripts": {
