@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Books</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="jumbotron text-center">
+            <h1>Create new Books</h1>
+        </div>
+        <div class="container-fluid text-left">
+            <form action="/create" method="POST" enctype="multipart/form-data">
+
+                <label for="Bookname">BookName:</label>
+                <input type="text" id="Bookname" name="Bookname" class="form-control" placeholder="Bookname"><br>
+
+                <label for="Author">Author:</label>
+                <input type="text" id="Author" name="Author" class="form-control" placeholder="Author"><br>
+                
+                <label for="Description">Description:</label>
+                <input type="text" id="description" name="description" class="form-control" placeholder="description"><br>
+                <div class="custom-file">
+                    <label class="custom-file-label" for="photo">Photo:</label>
+                    <input type="file" id="photo" name="photo" class="form-control custom-file-input" placeholder="Please upload JPEG/PNG format"><br>
+                </div>
+
+                <input type="submit" value="Create">
+            </form>
+        </div>
+    </body>
+    <script>
+        $(".custom-file-input").on("change", function() {
+          var fileName = $(this).val().split("\\").pop();
+        });
+    </script>
+</html>
