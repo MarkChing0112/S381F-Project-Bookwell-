@@ -3,19 +3,17 @@ Group No: 24
 Group Member: 1[Ching Man Ho, 13019210] 2[,13070826]
 
 User Guide:
-implement:
-    Bootstrap: npm install bootstrap@3
 
-User Account:
+User:
 Step 1: User login and access our server
 Step 2: after login user will be go to home page
 ##Display books and find books
 Step 3: Server will display list of book for user, also user allows to search a books.
 
-Admin Account:
+Admin:
 Access System:
-Step 1: Admin user need to input the url "http://localhost:8099/admin"
-Step 2: after login, the admin user will be go to the admin page to manage book details.
+Step 1: Admin user select admin login button at login page to access admin page.
+Step 2: after login admin user will be go to the admin page to manage book details.
 
 Add book:
 Step 1: Admin click the add book button to create page create a new book.
