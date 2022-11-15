@@ -1,6 +1,8 @@
 # Project: BookWell
-## Group No: 24
-## Group Member: 1[Ching Man Ho, 13019210] 2[Cheng Ho Lung,13070826]
+    Group No: 24
+    Group Member: 
+        * [Ching Man Ho, 13019210] 
+        * [Cheng Ho Lung,13070826]
 
 # User Guide:
 ## **implement:**
@@ -26,10 +28,9 @@
 * Step 3: Click the "Submit" Button.
 
 ### update books:
-* Step 1: Admin select a book of the list and go to the info page.
-* Step 2: Admin click the update book button and go to the update page.
-* Step 3: Admin input the new data to each field.
-* Step 4: Click the "Submit" Button.
+* Step 1: Admin select a book of the list and click the edit button go to the edit page.
+* Step 2: Admin input the new data to each field.
+* Step 3: Click the "Submit" Button.
 
 ### delete book:
 * Step 1: Admin select a book of the list and go to the info page.
