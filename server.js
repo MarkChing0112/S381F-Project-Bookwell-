@@ -336,4 +336,7 @@ app.get('/api/book/BookName/:BookName', function(req,res)  {
     }
 });
 
+app.get('/*', (req, res)=>{
+    res.status(404).render("alert", {message: `${req.path} - Unknown request!`})
+});
 app.listen(process.env.PORT || 8099);
