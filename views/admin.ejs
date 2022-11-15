@@ -47,7 +47,7 @@
                     <td><%= r.Description%></td>
                     <td>
                         <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i></button>
-                        <button type="button" class="btn btn-danger"><span class="bi bi-trash"></span></button>
+                        <a href="/delete?_id=<%= r._id %>&owner=<%= r.owner %>" class="btn btn-danger" role="button"><span class="bi bi-trash"></span></a>
                       </td>
                   </tr>
                   <% } %>

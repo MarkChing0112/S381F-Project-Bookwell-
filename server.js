@@ -7,7 +7,7 @@ const fs = require('fs');
 const formidable = require('express-formidable');
 //mongodb
 const MongoClient = require('mongodb').MongoClient;
-
+const ObjectID = require('mongodb').ObjectID;
 const mongourl = 'mongodb+srv://mark:1234567!@cluster0.cmqjfdr.mongodb.net/?retryWrites=true&w=majority';
 const dbName = 'bookWell';
 //const dbName = 'test';
@@ -84,41 +84,23 @@ const findDocument = (db, criteria, callback) => {
         callback(docs);
     });
 }
+//delete book
+const deleteDocument = (db, criteria, callback) => {
+    db.collection('book').deleteOne(
+       criteria, 
+       (err, results) => {
+          assert.equal(err, null);
+          console.log(results);
+          callback();
+       }
+    );
+};
 
-//sub methods
-const Admin_handle_Find = (req, res, criteria) =>{
-    const client = new MongoClient(mongourl);
-    client.connect((err)=>{
-        assert.equal(null, err);
-        console.log("Connected successfully to the DB server.");
-        const db = client.db(dbName);
-        //callback()
-        findDocument(db, {}, (docs)=>{
-            client.close();
-            console.log("Closed DB connection.");
-            res.status(200).render('adminpage.ejs', {name: `${req.session.userid}`, ninventory: docs.length, inventory: docs});
-        });
-    });
-}
-const handle_Find = (req, res, criteria) =>{
-    const client = new MongoClient(mongourl);
-    client.connect((err)=>{
-        assert.equal(null, err);
-        console.log("Connected successfully to the DB server.");
-        const db = client.db(dbName);
-        //callback()
-        findDocument(db, {}, (docs)=>{
-            client.close();
-            console.log("Closed DB connection.");
-            res.status(200).render('home', {name: `${req.session.userid}`,ninventory: docs.length, inventory: docs});
-        });
-    });
-}
+//first page
 app.get('/',(req,res) => {
 	if(!req.session.authenticated){
 		res.redirect("/login");
 	}
-    handle_Find
 })
 
 //admin
@@ -158,6 +140,30 @@ app.post('/admin', (req,res) => {
         }
     });
 });
+//admin delete
+app.get('/delete', (req, res)=>{
+    if(req.session.userid == req.query.owner && req.session.type == "admin"){
+        console.log("...hello owner of the document");
+        const client = new MongoClient(mongourl);
+        client.connect((err) => {
+            console.log("Connected successfully to server");
+            const db = client.db(dbName);
+    
+            let DOCID = {};
+            DOCID['_id'] = ObjectID(req.query._id);
+            DOCID['owner'] = req.query.owner;
+            deleteDocument(db, DOCID, (results)=>{
+                client.close();
+                console.log("Closed DB connection");
+                res.status(200).render('alert', {message: "Document successfully deleted."});
+            })     
+        });
+    }else{
+        res.status(200).render('alert', {message: "Access denied - You don't have the access right!"}); 
+    }
+});
+//Admin update book
+
 
 //login methods
 app.get('/login', (req,res) => {
@@ -177,8 +183,6 @@ app.post('/login', (req,res) =>{
     res.redirect("/");
 });
 
-//check login status
-
 //logout
 app.get('/logout', (req, res)=>{
     req.session = null;
@@ -190,7 +194,7 @@ app.get('/home', (req,res) => {
     res.status(200).render("home.ejs");
 });
 
-//create page
+//Admin create page
 app.get('/create', (req, res)=>{
     res.status(200).render("create.ejs");
 });
@@ -233,4 +237,6 @@ app.post('/create', (req, res)=>{
         }
     });
 });
+
+
 app.listen(process.env.PORT || 8099);
