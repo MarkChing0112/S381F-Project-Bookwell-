@@ -201,40 +201,35 @@ app.post('/update', (req, res)=>{
             console.log("Connected successfully to server");
             console.log("...checking owner");
             
-            if(req.fields.owner == req.session.userid){
-                if(req.fields.Bookname){
-                updateDOC['BookName']= req.fields.Bookname;
-                updateDOC['Author']= req.fields.Author;
-                updateDOC['Description']= req.fields.description;
-                updateDOC['owner']= `${req.session.userid}`;
-                var DOCID = {};
-                DOCID['_id'] = ObjectID(req.fields._id);
-                if (req.files.photo.size > 0) {
-                    var pdoc = {};
-                    fs.readFile(req.files.photo.path, (err, data) => {
-                        assert.equal(err,null);
-                        pdoc['data'] = new Buffer.from(data).toString('base64');
-                        pdoc['mimetype'] = req.files.photo.type;
-                    });
-                    updateDOC['photo'] = pdoc;
-                    updateDocument(DOCID, updateDOC, (docs) => {
-                        client.close();
-                        console.log("Closed DB connection");
-                        res.status(200).render('alert', {message: "book info and photo updated successfully!."});
-                    });
-                }else{
-                    updateDocument(DOCID, updateDOC, (docs) => {
-                        client.close();
-                        console.log("Closed DB connection");
-                        res.status(200).render('alert', {message: "book info updated successfully!."});
-                    });
-                }
+            if(req.fields.Bookname){
+            updateDOC['BookName']= req.fields.Bookname;
+            updateDOC['Author']= req.fields.Author;
+            updateDOC['Description']= req.fields.description;
+            updateDOC['owner']= `${req.session.userid}`;
+            var DOCID = {};
+            DOCID['_id'] = ObjectID(req.fields._id);
+            if (req.files.photo.size > 0) {
+                var pdoc = {};
+                fs.readFile(req.files.photo.path, (err, data) => {
+                    assert.equal(err,null);
+                    pdoc['data'] = new Buffer.from(data).toString('base64');
+                    pdoc['mimetype'] = req.files.photo.type;
+                });
+                updateDOC['photo'] = pdoc;
+                updateDocument(DOCID, updateDOC, (docs) => {
+                    client.close();
+                    console.log("Closed DB connection");
+                    res.status(200).render('alert', {message: "book info and photo updated successfully!."});
+                });
             }else{
-                res.status(200).render('alert', {message: "Invalid entry - Name is compulsory!"});}
-              
-    }else{
-                res.status(200).render('alert', {message: "Invalid owner - Only the owner can update the page!"});
+                updateDocument(DOCID, updateDOC, (docs) => {
+                    client.close();
+                    console.log("Closed DB connection");
+                    res.status(200).render('alert', {message: "book info updated successfully!."});
+                });
             }
+        }else{
+            res.status(200).render('alert', {message: "Invalid entry - Name is compulsory!"});}
     });
     
 });
@@ -315,5 +310,30 @@ app.post('/create', (req, res)=>{
     });
 });
 
+//Rest API
+//curl -X GET localhost:8099/api/book/BookName/:BookName
+//curl -X GET localhost:8099/api/book/BookName/cat
+app.get('/api/book/BookName/:BookName', function(req,res)  {
+    console.log("...Rest Api");
+	console.log("BookName: " + req.params.BookName);
+    if (req.params.BookName) {
+        let criteria = {};
+        criteria['BookName'] = req.params.BookName;
+        const client = new MongoClient(mongourl);
+        client.connect((err) => {
+            assert.equal(null, err);
+            console.log("Connected successfully to server");
+            const db = client.db(dbName);
+
+            findDocument(db, criteria, (docs) => {
+                client.close();
+                console.log("Closed DB connection");
+                res.status(200).json(docs);
+            });
+        });
+    } else {
+        res.status(500).json({"error": "missing name"});
+    }
+});
 
 app.listen(process.env.PORT || 8099);
