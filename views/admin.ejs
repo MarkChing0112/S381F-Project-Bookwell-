@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">    
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<title> Login Page </title>
+<title> Admin Page </title>
 <nav class="navbar navbar-light bg-dark justify-content-between" style="background-color: rgb(46, 52, 63)">
     <a class="navbar-brand mb-0 h1" style="color: rgb(255, 255, 255)">Book Well</a>
     <form class="form-inline">
@@ -38,7 +38,7 @@
                 <tbody>
                     <% for (var r of inventory) {%>
                   <tr>
-                    <th scope="row" id="_id"><%= r._id %></th>
+                    <th scope="row"><%= r._id %></th>
                     <td class="w-25">
                             <img src="data:<%= r.photo.mimetype %>;base64, <%= r.photo.data %>" class="img-fluid img-thumbnail"><br>
                     </td>

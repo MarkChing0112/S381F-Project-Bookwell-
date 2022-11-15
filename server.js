@@ -126,7 +126,7 @@ app.get('/adminpage', (req,res) => {
         findDocument(db, {}, (docs)=>{
             client.close();
             console.log("Closed DB connection.");
-            res.status(200).render('admin.ejs', {name: `${req.session.userid}`, ninventory: docs.length, inventory: docs});
+            res.status(200).render('admin.ejs', {ninventory: docs.length, inventory: docs});
         });
     });
 });
@@ -260,7 +260,19 @@ app.get('/logout', (req, res)=>{
 });
 //home page
 app.get('/home', (req,res) => {
-    res.status(200).render("home.ejs");
+
+    const client = new MongoClient(mongourl);
+    client.connect((err)=>{
+        assert.equal(null, err);
+        console.log("Connected successfully to the DB server.");
+        const db = client.db(dbName);
+        //callback()
+        findDocument(db, {}, (docs)=>{
+            client.close();
+            console.log("Closed DB connection.");
+            res.status(200).render('home.ejs', {name: `${req.session.userid}`, ninventory: docs.length, inventory: docs});
+        });
+    });
 });
 
 //Admin create page

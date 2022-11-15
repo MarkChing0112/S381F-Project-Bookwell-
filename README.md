@@ -22,10 +22,11 @@
 * Step 1: Admin user input the url "http://localhost:8099/admin" to the admin login page.
 * Step 2: after login, the admin user will be go to the admin page to manage book details.
 
-### Add book:
+### create book:
 * Step 1: Admin click the add book button to create page create a new book.
-* Step 2: Admin input the book information in the fields. 
-* Step 3: Click the "Submit" Button.
+* Step 2: Admin input the book information in the fields.
+* Step 3: Admin select an image of book cover page the photo type limited "jpg,jpeg,png".
+* Step 4: Click the "Submit" Button.
 
 ### update books:
 * Step 1: Admin select a book of the list and click the edit button go to the edit page.
@@ -33,9 +34,7 @@
 * Step 3: Click the "Submit" Button.
 
 ### delete book:
-* Step 1: Admin select a book of the list and go to the info page.
-* Step 2: Admin click the delete book to delete book data.
-* Step 3: Click the "Submit" Button.
+* Step 1: Admin click the delete button to delete book data.
 
 # Restful service:
     curl -X GET localhost:8099/api/book/BookName/cat    
