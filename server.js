@@ -8,6 +8,7 @@ const formidable = require('express-formidable');
 //mongodb
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
+
 const mongourl = 'mongodb+srv://mark:1234567!@cluster0.cmqjfdr.mongodb.net/?retryWrites=true&w=majority';
 const dbName = 'bookWell';
 //const dbName = 'test';
@@ -48,17 +49,6 @@ var Admins = new Array(
 );
 var DOC = {};
 
-
-const insertDocument = (db, doc, callback) => {
-	//db.createCollection('bookings');     
-	db.collection('bookings').
-    insertMany(doc, (err, results) => {
-        assert.equal(err,null);
-        console.log(`Inserted document(s): ${results.insertedCount}`);
-        callback();
-    });
-}
-
 //create new inventory docs
 const createDocument = (db, createDoc, callback) => {
     const client = new MongoClient(mongourl);
@@ -95,7 +85,26 @@ const deleteDocument = (db, criteria, callback) => {
        }
     );
 };
+//update book
+const updateDocument = (criteria, updateDoc, callback) => {
+    const client = new MongoClient(mongourl);
+    client.connect((err) => {
+        assert.equal(null, err);
+        console.log("Connected successfully to server");
+        const db = client.db(dbName);
 
+        db.collection('book').updateOne(criteria,
+            {
+                $set : updateDoc
+            },
+            (err, results) => {
+                client.close();
+                assert.equal(err, null);
+                callback(results);
+            }
+        );
+    });
+}
 //first page
 app.get('/',(req,res) => {
 	if(!req.session.authenticated){
@@ -163,7 +172,72 @@ app.get('/delete', (req, res)=>{
     }
 });
 //Admin update book
+app.get('/edit', (req, res)=>{
 
+    const client = new MongoClient(mongourl);
+    client.connect((err) => {
+        assert.equal(null, err);
+        console.log("Connected successfully to server");
+        const db = client.db(dbName);
+
+        let DOCID = {};
+        DOCID['_id'] = ObjectID(req.query._id);
+        findDocument(db, DOCID, (docs) => {  
+            client.close();
+            console.log("Closed DB connection");
+            console.log(docs[0]);
+            res.status(200).render('edit', {book: docs[0]});
+        });
+    });
+}); 
+
+app.post('/update', (req, res)=>{
+    //store edit data
+    var updateDOC={};
+
+    const client = new MongoClient(mongourl);
+        client.connect((err) => {
+            assert.equal(null, err);
+            console.log("Connected successfully to server");
+            console.log("...checking owner");
+            
+            if(req.fields.owner == req.session.userid){
+                if(req.fields.Bookname){
+                updateDOC['BookName']= req.fields.Bookname;
+                updateDOC['Author']= req.fields.Author;
+                updateDOC['Description']= req.fields.description;
+                updateDOC['owner']= `${req.session.userid}`;
+                var DOCID = {};
+                DOCID['_id'] = ObjectID(req.fields._id);
+                if (req.files.photo.size > 0) {
+                    var pdoc = {};
+                    fs.readFile(req.files.photo.path, (err, data) => {
+                        assert.equal(err,null);
+                        pdoc['data'] = new Buffer.from(data).toString('base64');
+                        pdoc['mimetype'] = req.files.photo.type;
+                    });
+                    updateDOC['photo'] = pdoc;
+                    updateDocument(DOCID, updateDOC, (docs) => {
+                        client.close();
+                        console.log("Closed DB connection");
+                        res.status(200).render('alert', {message: "book info and photo updated successfully!."});
+                    });
+                }else{
+                    updateDocument(DOCID, updateDOC, (docs) => {
+                        client.close();
+                        console.log("Closed DB connection");
+                        res.status(200).render('alert', {message: "book info updated successfully!."});
+                    });
+                }
+            }else{
+                res.status(200).render('alert', {message: "Invalid entry - Name is compulsory!"});}
+              
+    }else{
+                res.status(200).render('alert', {message: "Invalid owner - Only the owner can update the page!"});
+            }
+    });
+    
+});
 
 //login methods
 app.get('/login', (req,res) => {
@@ -207,8 +281,11 @@ app.post('/create', (req, res)=>{
         assert.equal(null, err);
         console.log("Connected successfully to the DB server.");
         const db = client.db(dbName);
-
+        var timestamp = Math.floor(new Date().getTime()/1000);
         //add data from the table
+        var objectId = new ObjectID(timestamp);
+
+	    DOC["_id"] = objectId;
         DOC['BookName']= req.fields.Bookname;
         DOC['Author']= req.fields.Author;
         DOC['Description']= req.fields.description;

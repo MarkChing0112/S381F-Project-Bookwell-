@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Books</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script>
+            function goBack() { window.history.back();}
+            </script>
+    </head>
+    <body>
+        <div class="jumbotron text-center">
+            <h1>Update Book : <%= book.BookName %> </h1>
+            <p ></p>Owner: <%= book.owner %></p><br>
+        </div>
+        <div class="container-fluid text-left">
+            <form action="/update" method="POST" enctype="multipart/form-data">
+
+                <label for="Bookname">BookName:</label>
+                <input type="text" id="Bookname" name="Bookname" class="form-control" placeholder="Bookname" value= <% if (book.BookName) { %><%= book.BookName %><% } %>> <br>
+
+                <label for="Author">Author:</label>
+                <input type="text" id="Author" name="Author" class="form-control" placeholder="Author" value = <% if (book.Author) { %><%= book.Author %><% } %>><br>
+                
+                <label for="Description">Description:</label>
+                <input type="text" id="description" name="description" class="form-control" placeholder="description" value =<% if (book.Description) { %><%= book.Description %><% } %>><br>
+                <!--If book has photo in mongodb-->
+                <div class="custom-file">
+                    <label class="custom-file-label" for="photo">Update New Photo:</label>
+                    <div class="row" >
+                        <% if (book.photo) { %>
+                            <img src="data:image/<%= book.photo.mimetype %>;base64, <%= book.photo.data %>" alt="<%= book.photo.title %>" class="img-thumbnail"><br>
+                        <% } %>
+                    </div>
+                    <input type="file" id="photo" name="photo" class="form-control custom-file-input" placeholder="Photo"><br>
+                </div>
+                <input type="hidden" name="_id" value=<%= book._id %>>
+                <input type="hidden" name="owner" value=<%= book.owner %>>
+                <input type="submit" value="update">
+            </form>
+        </div>
+    </body>
+    <script>
+        $(".custom-file-input").on("change", function() {
+          var fileName = $(this).val().split("\\").pop();
+          $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+</html>

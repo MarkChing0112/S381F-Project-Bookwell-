@@ -38,7 +38,7 @@
                 <tbody>
                     <% for (var r of inventory) {%>
                   <tr>
-                    <th scope="row"><%= r._id %></th>
+                    <th scope="row" id="_id"><%= r._id %></th>
                     <td class="w-25">
                             <img src="data:<%= r.photo.mimetype %>;base64, <%= r.photo.data %>" class="img-fluid img-thumbnail"><br>
                     </td>
@@ -46,7 +46,7 @@
                     <td><%= r.Author%></td>
                     <td><%= r.Description%></td>
                     <td>
-                        <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i></button>
+                        <a href="/edit?_id=<%= r._id %>" class="btn btn-primary" role="button"><i class="bi bi-pencil-square"></i></a>
                         <a href="/delete?_id=<%= r._id %>&owner=<%= r.owner %>" class="btn btn-danger" role="button"><span class="bi bi-trash"></span></a>
                       </td>
                   </tr>
