@@ -275,7 +275,23 @@ app.get('/home', (req,res) => {
         });
     });
 });
+//detail
+app.get('/details', (req,res) => {
+    const client = new MongoClient(mongourl);
+    client.connect((err) => {
+        assert.equal(null, err);
+        console.log("Connected successfully to DB server");
+        const db = client.db(dbName);
 
+        let DOCID = {};
+        DOCID['_id'] = ObjectID(req.query._id);
+        findDocument(db, DOCID, (docs) => {  
+            client.close();
+            console.log("Closed DB connection");
+            res.status(200).render('detail.ejs', {books: docs[0]});
+        });
+    });
+});
 //Admin create page
 app.get('/create', (req, res)=>{
     res.status(200).render("create.ejs");
@@ -325,13 +341,14 @@ app.post('/create', (req, res)=>{
 
 //Rest API
 //curl -X GET localhost:8099/api/book/BookName/:BookName
-//curl -X GET localhost:8099/api/book/BookName/cat
-app.get('/api/book/BookName/:BookName', function(req,res)  {
+//curl -X GET localhost:8099/api/book/BookName/Catt
+//curl -X GET localhost:8099/api/book/Author/Catt
+app.get('/api/book/Author:Author', function(req,res)  {
     console.log("...Rest Api");
-	console.log("BookName: " + req.params.BookName);
-    if (req.params.BookName) {
+	console.log("Author: " + req.params.Author);
+    if (req.params.Author) {
         let criteria = {};
-        criteria['BookName'] = req.params.BookName;
+        criteria['Author'] = req.params.Author;
         const client = new MongoClient(mongourl);
         client.connect((err) => {
             assert.equal(null, err);
@@ -350,6 +367,6 @@ app.get('/api/book/BookName/:BookName', function(req,res)  {
 });
 
 app.get('/*', (req, res)=>{
-    res.status(404).render("alert", {message: `${req.path} - Unknown request!`})
+    res.status(404).render("userAlert.ejs", {message: `${req.path} - Unknown request!`})
 });
 app.listen(process.env.PORT || 8099);
