@@ -257,7 +257,7 @@ app.post('/login', (req,res) =>{
 app.get('/logout', (req, res)=>{
     req.session = null;
     req.authenticated = false;
-    res.redirect('/admin');
+    res.redirect('/');
 });
 //home page
 app.get('/home', (req,res) => {
