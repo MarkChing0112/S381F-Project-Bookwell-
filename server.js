@@ -110,6 +110,7 @@ app.get('/',(req,res) => {
 	if(!req.session.authenticated){
 		res.redirect("/login");
 	}
+    res.redirect('/home')
 })
 
 //admin
