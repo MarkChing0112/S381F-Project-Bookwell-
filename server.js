@@ -271,7 +271,7 @@ app.get('/home', (req,res) => {
         findDocument(db, {}, (docs)=>{
             client.close();
             console.log("Closed DB connection.");
-            res.status(200).render('home.ejs', {name: `${req.session.userid}`, ninventory: docs.length, inventory: docs});
+            res.status(200).render('home.ejs', {name: `${req.session.userid}`, ninventory: docs.length, books: docs});
         });
     });
 });
@@ -286,7 +286,7 @@ app.get('/search', (req,res) => {
         findDocument(db, {}, (docs) => {  
             client.close();
             console.log("Closed DB connection");
-            res.status(200).render('searchBook.ejs', {inventory: docs});
+            res.status(200).render('searchBook.ejs', {books: docs});
         });
     });
 });
