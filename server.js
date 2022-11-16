@@ -275,6 +275,21 @@ app.get('/home', (req,res) => {
         });
     });
 });
+//Search Books
+app.get('/search', (req,res) => {
+    const client = new MongoClient(mongourl);
+    client.connect((err) => {
+        assert.equal(null, err);
+        console.log("Connected successfully to DB server");
+        const db = client.db(dbName);
+
+        findDocument(db, {}, (docs) => {  
+            client.close();
+            console.log("Closed DB connection");
+            res.status(200).render('searchBook.ejs', {inventory: docs});
+        });
+    });
+});
 //detail
 app.get('/details', (req,res) => {
     const client = new MongoClient(mongourl);

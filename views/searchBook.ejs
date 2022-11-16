@@ -1,0 +1,72 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Search</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="d-flex align-items-center">
+        <div class="container d-flex align-items-center">
+
+            <h1 class="logo me-auto"><a href="/home">BookWell</a></h1>
+
+
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a class="nav-link scrollto " href="/search">Search Books</a></li>
+                    <li><a class="getstarted scrollto" href="/logout">Logout</a></li>
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle"></i>
+            </nav>
+
+        </div>
+    </header>
+    <!-- End Header -->
+    <div class="container-fluid">
+        <br>
+        <div class="row">
+            <p>Search inventory name:
+                <label for="bar"><span class="glyphicon glyphicon-search"></span></label><input style="width:100%"
+                    type="text" id="myInput" onkeyup="myFunction()" placeholder="Search name:" name="bar"><br>
+            </p>
+            <table id="myTable" class="table table-striped table-bordered table-hover table-scroll">
+                <thead>
+                    <tr class="table-primary">
+                        <th>inventory Name</th>
+                    </tr>
+                </thead>
+                <tbody style='height:300px;display:block;overflow:scroll'>
+                    <% for (var r of inventory) {%>
+                        <tr>
+                            <td><a href="/details?_id=<%= r._id %>"><%= r.BookName %></a></td>
+                            <td><%= r.Author%></td>
+                          </tr>
+                        <% } %>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+
+    </script>
+</body>
+
+</html>
