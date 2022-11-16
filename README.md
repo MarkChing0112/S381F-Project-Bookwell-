@@ -24,7 +24,7 @@
     [username: admin,password:admin]
 
 ### Access System:
-* Step 1: Admin user input the url "http://localhost:8099/admin" or "https://bookwell.herokuapp.com/admin"to the admin login page.
+* Step 1: Admin user input the url "http://localhost:8099/admin" or "https://bookwell.herokuapp.com/admin" to the admin login page.
 * Step 2: after login, the admin user will be go to the admin page to manage book details.
 
 ### create book:
