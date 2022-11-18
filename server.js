@@ -39,13 +39,11 @@ app.use(session({
 
 //User Account
 var users = new Array(
-	{name: "mark", password: "mark"},
     {name: "student", password: "student"}
 );
 var Admins = new Array(
     {name:"Admin", password:"Admin"},
     {name:"admin",password:"admin"},
-    {name:"Mark", password:"Mark"}
 );
 var DOC = {};
 
@@ -105,19 +103,19 @@ const updateDocument = (criteria, updateDoc, callback) => {
         );
     });
 }
-//first page
+//first
 app.get('/',(req,res) => {
 	if(!req.session.authenticated){
-		res.redirect("/login");
+		res.render('Firstpage.ejs')
 	}
     res.redirect('/home')
 })
 
 //admin
 app.get('/adminpage', (req,res) => {
-    if(!req.session.authenticated){
-        res.redirect("/admin");
-    }
+    if(!req.session.authenticated && req.session.type !="admin"){
+		res.redirect("/admin");
+	}
     const client = new MongoClient(mongourl);
     client.connect((err)=>{
         assert.equal(null, err);
@@ -152,6 +150,9 @@ app.post('/admin', (req,res) => {
 });
 //admin delete
 app.get('/delete', (req, res)=>{
+    if(!req.session.authenticated && req.session.type !="admin"){
+		res.redirect("/admin");
+	}
     if(req.session.userid == req.query.owner && req.session.type == "admin"){
         console.log("...hello owner of the document");
         const client = new MongoClient(mongourl);
@@ -174,7 +175,9 @@ app.get('/delete', (req, res)=>{
 });
 //Admin update book
 app.get('/edit', (req, res)=>{
-
+    if(!req.session.authenticated){
+		res.redirect("/login");
+	}
     const client = new MongoClient(mongourl);
     client.connect((err) => {
         assert.equal(null, err);
@@ -261,7 +264,9 @@ app.get('/logout', (req, res)=>{
 });
 //home page
 app.get('/home', (req,res) => {
-
+	if(!req.session.authenticated){
+		res.redirect("/login");
+	}
     const client = new MongoClient(mongourl);
     client.connect((err)=>{
         assert.equal(null, err);
@@ -277,6 +282,9 @@ app.get('/home', (req,res) => {
 });
 //Search Books
 app.get('/search', (req,res) => {
+    if(!req.session.authenticated){
+		res.redirect("/login");
+	}
     const client = new MongoClient(mongourl);
     client.connect((err) => {
         assert.equal(null, err);
@@ -292,6 +300,9 @@ app.get('/search', (req,res) => {
 });
 //detail
 app.get('/details', (req,res) => {
+    if(!req.session.authenticated){
+		res.redirect("/login");
+	}
     const client = new MongoClient(mongourl);
     client.connect((err) => {
         assert.equal(null, err);
@@ -309,6 +320,9 @@ app.get('/details', (req,res) => {
 });
 //Admin create page
 app.get('/create', (req, res)=>{
+    if(!req.session.authenticated && req.session.type !="admin"){
+		res.redirect("/admin");
+	}
     res.status(200).render("create.ejs");
 });
 app.post('/create', (req, res)=>{
@@ -356,10 +370,30 @@ app.post('/create', (req, res)=>{
 
 //Rest API
 //curl -X GET localhost:8099/api/book/BookName/:BookName
-//curl -X GET localhost:8099/api/book/BookName/Catt
-//curl -X GET localhost:8099/api/book/Author/Catt
-app.get('/api/book/Author:Author', function(req,res)  {
-    console.log("...Rest Api");
+//curl -X GET localhost:8099/api/book/BookName/Cats
+app.get('/api/book/BookName/:BookName', function(req,res)  {
+	console.log("BookName: " + req.params.BookName);
+    if (req.params.BookName) {
+        let criteria = {};
+        criteria['BookName'] = req.params.BookName;
+        const client = new MongoClient(mongourl);
+        client.connect((err) => {
+            assert.equal(null, err);
+            console.log("Connected successfully to server");
+            const db = client.db(dbName);
+
+            findDocument(db, criteria, (docs) => {
+                client.close();
+                console.log("Closed DB connection");
+                res.status(200).json(docs);
+            });
+        });
+    } else {
+        res.status(500).json({"error": "missing name"});
+    }
+});
+//curl -X GET localhost:8099/api/book/Author/PhilStamper
+app.get('/api/book/Author/:Author', function(req,res)  {
 	console.log("Author: " + req.params.Author);
     if (req.params.Author) {
         let criteria = {};

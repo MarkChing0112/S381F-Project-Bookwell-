@@ -1,7 +1,7 @@
 # Project: BookWell
     Group No: 24
     Group Member: 
-        * [Ching Man Ho, 13019210] 
+        * [Ching Man Ho,13019210] 
         * [Cheng Ho Lung,13070826]
 
 # User Guide:
@@ -23,7 +23,7 @@
 ## Admin Account:
     [username: admin,password:admin]
 
-### Access System:
+### Access Admin System:
 * Step 1: Admin user input the url "http://localhost:8099/admin" or "https://bookwell.herokuapp.com/admin" to the admin login page.
 * Step 2: after login, the admin user will be go to the admin page to manage book details.
 
@@ -42,4 +42,6 @@
 * Step 1: Admin click the delete button to delete book data.
 
 # Restful service:
-    curl -X GET localhost:8099/api/book/BookName/cat    
+    get book data using curl .
+    curl -X GET localhost:8099/api/book/BookName/Cats
+    curl -X GET localhost:8099/api/book/Author/PhilStamper
