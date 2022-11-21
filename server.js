@@ -34,12 +34,13 @@ app.use(session({
     userid: "session",  
     keys: ['th1s!sA5ecretK3y'],
     type: ""
-    //maxAge: 90 * 24 * 60 * 60 * 1000
 }));
 
 //User Account
 var users = new Array(
-    {name: "student", password: "student"}
+    {name: "student", password: "student"},
+    {name: "Student", password: "Student"},
+    {name: "demo", password: "demo"}
 );
 var Admins = new Array(
     {name:"Admin", password:"Admin"},
